@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Моя рефералка</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      height: 100vh; text-align: center;
+      background: linear-gradient(135deg, #f5e9d3, #d9ccc4, #c4b7a6);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
+      color: #4b3b2b;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #refLink {
+      margin-top: 20px;
+      width: 300px;
+      padding: 8px;
+      border: 1px solid #888;
+      border-radius: 5px;
+      background: transparent;
+      color: #4b3b2b;
+      font-size: 1em;
+      text-align: center;
+    }
+
+    #refSection {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Реферальна система</h2>
+<button onclick="showReferral()">Отримати свій лінк</button>
+
+<div id="refSection">
+  <p>Ваш реферальний код: <strong id="refCodeDisplay"></strong></p>
+  <input type="text" id="refLink" readonly />
+</div>
+
+<script>
+  function generateReferralCode() {
+    return 'user-' + Math.random().toString(36).substr(2, 9);
+  }
+
+  const myReferralCode = localStorage.getItem('referralCode') || generateReferralCode();
+  localStorage.setItem('referralCode', myReferralCode);
+
+  function showReferral() {
+    document.getElementById('refSection').style.display = 'flex';
+    document.getElementById('refCodeDisplay').textContent = myReferralCode;
+    document.getElementById('refLink').value = `${window.location.origin}/?ref=${myReferralCode}`;
+  }
+</script>
+
+</body>
+</html>
