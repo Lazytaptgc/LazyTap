@@ -68,8 +68,26 @@
   <p>Ваш реферальний код: <strong id="refCodeDisplay"></strong></p>
   <input type="text" id="refLink" readonly />
 </div>
-
+<button id="backButton" style="
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 15px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    transition: background-color 0.3s ease;
+  ">
+  Назад
+</button>
 <script>
+  document.getElementById('backButton').onclick = () => {
+    window.location.href = 'index.html';
+  };
   function generateReferralCode() {
     return 'user-' + Math.random().toString(36).substr(2, 9);
   }
