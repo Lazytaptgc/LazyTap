@@ -1,29 +1,62 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Earn Taps</title>
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
+      margin: 0; 
+      padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
       text-align: center;
-      background: #f9f9f9;
+      background: linear-gradient(135deg, #f5e9d3, #d9ccc4, #c4b7a6);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
+      color: #4b3b2b;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     button {
       padding: 15px 30px;
       font-size: 1.2em;
       margin: 10px;
       cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+    }
+    button:hover:not(:disabled) {
+      background-color: #45a049;
     }
     #rewardBtn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+    #backButton {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 15px;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      transition: background-color 0.3s ease;
     }
   </style>
 </head>
@@ -34,51 +67,36 @@
 
   <button onclick="openTelegram()">Підписатись</button>
   <button id="rewardBtn" disabled onclick="claimReward()">Отримати бонус</button>
-  <button id="backButton" style="
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    padding: 10px 15px;
-    font-size: 1em;
-    cursor: pointer;
-    border-radius: 5px;
-    border: none;
-    background-color: #4CAF50;
-    color: white;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-    transition: background-color 0.3s ease;
-  ">Назад</button>
+  <button id="backButton">Назад</button>
 
-<div id="greenSkin" class="skinOption">Зелений</div>
-<div id="redSkin" class="skinOption">Червоний</div>
-<div id="yellowSkin" class="skinOption">Жовтий</div>
-  <script>
-    document.getElementById('backButton').onclick = () => {
+<script>
+  document.getElementById('backButton').onclick = () => {
     window.location.href = 'index.html';
   };
-    let hasVisitedChannel = false;
 
-    function openTelegram() {
-      hasVisitedChannel = true;
-      // Відкриває канал у новій вкладці
-      window.open('https://t.me/+Ov0DYQFVwQFiM2Vi', '_blank');
+  let hasVisitedChannel = false;
 
-      // Імітація перевірки — в реальності потрібна серверна перевірка!
-      setTimeout(() => {
-        document.getElementById('rewardBtn').disabled = false;
-      }, 3000);
+  function openTelegram() {
+    hasVisitedChannel = true;
+    // Відкриває канал у новій вкладці
+    window.open('https://t.me/+Ov0DYQFVwQFiM2Vi', '_blank');
+
+    // Імітація перевірки — в реальності потрібна серверна перевірка!
+    setTimeout(() => {
+      document.getElementById('rewardBtn').disabled = false;
+    }, 3000);
+  }
+
+  function claimReward() {
+    if (hasVisitedChannel) {
+      let taps = parseInt(localStorage.getItem('taps')) || 0;
+      taps += 100;
+      localStorage.setItem('taps', taps);
+      alert('🎉 Ви отримали 100 тапів!');
+      // window.close(); // часто блокується браузером
     }
-
-    function claimReward() {
-      if (hasVisitedChannel) {
-        let taps = parseInt(localStorage.getItem('taps')) || 0;
-        taps += 100;
-        localStorage.setItem('taps', taps);
-        alert('🎉 Ви отримали 100 тапів!');
-        window.close(); // Закриває вкладку (не завжди працює)
-      }
-    }
-  </script>
+  }
+</script>
 
 </body>
 </html>
