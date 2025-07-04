@@ -75,21 +75,21 @@
     }
 
    #resetButton {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: 20px;
   padding: 6px 12px;
   font-size: 0.9em;
-  background-color: #e74c3c;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  z-index: 10;
+  z-index: 1000;
 }
-    #resetButton:hover {
-  background-color: #c0392b;
+
+#resetButton:hover {
+  filter: brightness(1.1);
 }
 
     #iconsRow {
@@ -198,7 +198,7 @@ function checkDailyReward() {
 }
 
 dailyRewardButton.onclick = () => {
-  const rewardAmount = 50; // або скільки хочеш
+  const rewardAmount = 2000;
 
   taps += rewardAmount;
   localStorage.setItem('taps', taps);
@@ -207,6 +207,7 @@ dailyRewardButton.onclick = () => {
   updateDisplay();
   checkDailyReward();
 };
+
 
 // Перевірка при завантаженні
 checkDailyReward();
@@ -241,14 +242,22 @@ if (ref && !localStorage.getItem('referredBy')) {
     xpBar.style.width = `${percent}%`;
   }
 
-  function applySkin() {
-    const skin = localStorage.getItem('skin') || 'green';
-    switch (skin) {
-      case 'red': tapButton.style.backgroundColor = '#e74c3c'; break;
-      case 'yellow': tapButton.style.backgroundColor = '#f1c40f'; break;
-      default: tapButton.style.backgroundColor = '#4CAF50';
-    }
+ function applySkin() {
+  const skin = localStorage.getItem('skin') || 'green';
+  switch (skin) {
+    case 'red':
+      tapButton.style.backgroundColor = '#e74c3c';
+      resetButton.style.backgroundColor = '#e74c3c';
+      break;
+    case 'yellow':
+      tapButton.style.backgroundColor = '#f1c40f';
+      resetButton.style.backgroundColor = '#f1c40f';
+      break;
+    default:
+      tapButton.style.backgroundColor = '#4CAF50';
+      resetButton.style.backgroundColor = '#4CAF50';
   }
+}
 
   applySkin();
   updateDisplay();
