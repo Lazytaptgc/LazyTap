@@ -24,10 +24,11 @@
     }
 
     #tapCount {
-      font-size: 2.5em;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
+  font-size: 2em;
+  font-weight: bold;
+  margin: 20px 0 10px;
+  position: relative;
+}
 
     #levelInfo {
       font-size: 1.2em;
@@ -73,12 +74,23 @@
       transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
 
-    #resetButton {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 1em;
-      cursor: pointer;
-    }
+   #resetButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 6px 12px;
+  font-size: 0.9em;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+}
+    #resetButton:hover {
+  background-color: #c0392b;
+}
 
     #iconsRow {
       margin-top: 40px;
@@ -97,7 +109,7 @@
       font-size: 0.9em;
       user-select: none;
     }
-
+    
     .iconButton:hover { color: #4CAF50; }
 
     .iconImg {
@@ -133,6 +145,11 @@
 <div id="tapCount">Тапів: 1000</div>
 <div id="levelInfo">Рівень: 1 | XP: 0 / 100</div>
 <div id="xpBarContainer"><div id="xpBar"></div></div>
+<div style="position: relative; width: 100%; max-width: 500px;">
+  <div id="tapCount">Тапів: 500</div>
+  <button id="resetButton">Reset</button>
+</div>
+
 <button id="tapButton" aria-label="Тап кнопка">🔘</button>
 <button id="resetButton">Reset</button>
 <button id="dailyRewardButton">Щоденна винагорода 🎁</button>
