@@ -69,10 +69,11 @@
     #tapButton:hover { background-color: #45a049; }
 
     #tapButton:active {
-      transform: scale(0.9);
-      box-shadow: 0 0 15px 4px #4CAF50;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-    }
+  transform: scale(0.9);
+  box-shadow: 0 0 15px 4px var(--glow-color);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
 
    #resetButton {
   position: fixed;
@@ -242,20 +243,26 @@ if (ref && !localStorage.getItem('referredBy')) {
     xpBar.style.width = `${percent}%`;
   }
 
- function applySkin() {
+function applySkin() {
   const skin = localStorage.getItem('skin') || 'green';
   switch (skin) {
     case 'red':
       tapButton.style.backgroundColor = '#e74c3c';
+      tapButton.style.color = '#fff';
       resetButton.style.backgroundColor = '#e74c3c';
+      document.documentElement.style.setProperty('--glow-color', '#e74c3c');
       break;
     case 'yellow':
       tapButton.style.backgroundColor = '#f1c40f';
+      tapButton.style.color = '#fff';
       resetButton.style.backgroundColor = '#f1c40f';
+      document.documentElement.style.setProperty('--glow-color', '#f1c40f');
       break;
     default:
       tapButton.style.backgroundColor = '#4CAF50';
+      tapButton.style.color = '#fff';
       resetButton.style.backgroundColor = '#4CAF50';
+      document.documentElement.style.setProperty('--glow-color', '#4CAF50');
   }
 }
 
