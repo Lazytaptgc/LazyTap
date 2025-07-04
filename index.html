@@ -263,26 +263,31 @@ if (ref && !localStorage.getItem('referredBy')) {
   updateDisplay();
 
   tapButton.onclick = () => {
-    if (energy > 0) {
-      taps += boost;
-      xp += 1;
-      energy -= 1;
+  if (energy > 0) {
+    taps += boost;
+    xp += 1;
+    energy -= 1;
 
-      while (xp >= xpForNextLevel(level)) {
-        xp -= xpForNextLevel(level);
-        level++;
-        alert(`🎉 Новий рівень: ${level}`);
-      }
+    // Анімація клацання
+    tapButton.classList.add('tapFlash');
+    setTimeout(() => tapButton.classList.remove('tapFlash'), 300);
 
-      localStorage.setItem('taps', taps);
-      localStorage.setItem('xp', xp);
-      localStorage.setItem('level', level);
-      localStorage.setItem('energy', energy);
-      updateDisplay();
-    } else {
-      alert('Немає енергії! Зачекай кілька секунд ⏳');
+    while (xp >= xpForNextLevel(level)) {
+      xp -= xpForNextLevel(level);
+      level++;
+      alert(`🎉 Новий рівень: ${level}`);
     }
-  };
+
+    localStorage.setItem('taps', taps);
+    localStorage.setItem('xp', xp);
+    localStorage.setItem('level', level);
+    localStorage.setItem('energy', energy);
+    updateDisplay();
+  } else {
+    alert('Немає енергії! Зачекай кілька секунд ⏳');
+  }
+};
+
 
   resetButton.onclick = () => {
     taps = 0;
