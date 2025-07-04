@@ -105,6 +105,27 @@
       height: 40px;
       margin-bottom: 8px;
     }
+    #dailyRewardButton {
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: #f39c12; /* помаранчевий */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+}
+
+#dailyRewardButton:hover {
+  background-color: #e67e22;
+}
+
+#dailyRewardButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
   </style>
 </head>
 <body>
@@ -114,6 +135,7 @@
 <div id="xpBarContainer"><div id="xpBar"></div></div>
 <button id="tapButton" aria-label="Тап кнопка">🔘</button>
 <button id="resetButton">Reset</button>
+<button id="dailyRewardButton">Щоденна винагорода 🎁</button>
 <div id="iconsRow" style="display: flex; justify-content: space-around; width: 90%; max-width: 400px;">
   <a class="iconButton" onclick="window.location.href = 'referral.html';">
   <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/share.png" alt="Реферал" />
@@ -146,6 +168,34 @@
   const resetButton = document.getElementById('resetButton');
   const urlParams = new URLSearchParams(window.location.search);
   const ref = urlParams.get('ref');
+  const dailyRewardButton = document.getElementById('dailyRewardButton');
+
+function checkDailyReward() {
+  const lastClaimed = localStorage.getItem('dailyRewardClaimedAt');
+  const now = Date.now();
+  const oneDay = 24 * 60 * 60 * 1000;
+
+  if (!lastClaimed || now - parseInt(lastClaimed) >= oneDay) {
+    dailyRewardButton.disabled = false;
+  } else {
+    dailyRewardButton.disabled = true;
+  }
+}
+
+dailyRewardButton.onclick = () => {
+  const rewardAmount = 50; // або скільки хочеш
+
+  taps += rewardAmount;
+  localStorage.setItem('taps', taps);
+  localStorage.setItem('dailyRewardClaimedAt', Date.now());
+  alert(`🎁 Ти отримав ${rewardAmount} тапів як щоденну нагороду!`);
+  updateDisplay();
+  checkDailyReward();
+};
+
+// Перевірка при завантаженні
+checkDailyReward();
+
 
 if (ref && !localStorage.getItem('referredBy')) {
   localStorage.setItem('referredBy', ref);
