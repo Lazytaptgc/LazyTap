@@ -1,382 +1,134 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>LazyTap WebApp</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LazyTap</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      height: 100vh; text-align: center;
-      background: linear-gradient(135deg, #f5e9d3, #d9ccc4, #c4b7a6);
-      background-size: 400% 400%;
-      animation: gradientBG 20s ease infinite;
-      color: #4b3b2b;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 30px;
+      background-color: #f0f0f0;
     }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    #tapCount {
-  font-size: 2em;
-  font-weight: bold;
-  margin: 20px 0 10px;
-  position: relative;
-}
-
-    #levelInfo {
-      font-size: 1.2em;
-      margin-bottom: 10px;
-    }
-
-    #xpBarContainer {
-      width: 80%;
-      max-width: 300px;
-      height: 10px;
-      background: #ccc;
-      border-radius: 5px;
-      overflow: hidden;
-      margin-bottom: 30px;
-    }
-
-    #xpBar {
-      height: 100%;
-      background: #4CAF50;
-      width: 0%;
-      transition: width 0.3s;
-    }
-
     #tapButton {
-      width: 140px;
-      height: 140px;
-      border-radius: 70px;
-      border: none;
-      background-color: #4CAF50;
+      font-size: 32px;
+      padding: 20px 40px;
+      background-color: #4caf50;
       color: white;
-      font-size: 2em;
+      border: none;
+      border-radius: 12px;
       cursor: pointer;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-      transition: background-color 0.3s ease;
-      margin-bottom: 20px;
     }
-
-    #tapButton:hover { background-color: #45a049; }
-
-    #tapButton:active {
-  transform: scale(0.9);
-  box-shadow: 0 0 15px 4px var(--glow-color);
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-
-   #resetButton {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 6px 12px;
-  font-size: 0.9em;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  z-index: 1000;
-}
-
-#resetButton:hover {
-  filter: brightness(1.1);
-}
-
-    #iconsRow {
-      margin-top: 40px;
-      width: 90%;
-      max-width: 400px;
-      display: flex;
-      justify-content: space-around;
+    .stats {
+      margin-top: 20px;
+      font-size: 20px;
     }
-
-    .iconButton {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    #boostButton {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #ff9800;
+      color: white;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
-      color: #666;
-      font-size: 0.9em;
-      user-select: none;
     }
-    
-    .iconButton:hover { color: #4CAF50; }
-
-    .iconImg {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 8px;
-    }
-    #dailyRewardButton {
-  padding: 10px 20px;
-  font-size: 1em;
-  cursor: pointer;
-  background-color: #f39c12; /* помаранчевий */
-  color: white;
-  border: none;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  transition: background-color 0.3s ease;
-}
-
-#dailyRewardButton:hover {
-  background-color: #e67e22;
-}
-
-#dailyRewardButton:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
   </style>
 </head>
 <body>
 
-<div id="levelInfo">Рівень: 1 | XP: 0 / 100</div>
-<div id="xpBarContainer"><div id="xpBar"></div></div>
-<div style="position: relative; width: 100%; max-width: 500px;">
-  <div id="tapCount">Тапів: 500</div>
-  <button id="resetButton">Reset</button>
-</div>
+  <h1>LazyTap</h1>
+  <button id="tapButton">Тапни!</button>
 
-<button id="tapButton" aria-label="Тап кнопка">🔘</button>
-<button id="dailyRewardButton">Щоденна винагорода 🎁</button>
-<div id="iconsRow" style="display: flex; justify-content: space-around; width: 90%; max-width: 400px;">
-  <a class="iconButton" onclick="window.location.href = 'referral.html';">
-  <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/share.png" alt="Реферал" />
-  Реферал
-  </a>
+  <div class="stats">
+    <p>Тапів: <span id="tapCount">0</span></p>
+    <p>Енергія: <span id="energy">100</span>%</p>
+    <p>Буст активний: <span id="boostActive">Ні</span></p>
+  </div>
 
+  <button id="boostButton">Активувати Буст</button>
 
-  <a class="iconButton" href="earn.html" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-    <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/money-bag.png" alt="Earn" />
-    Earn
-  </a>
+  <!-- Основний JS код -->
+  <script>
+    let tapCount = 0;
+    let energy = 100;
+    let boostActive = false;
+    let energyInterval;
 
-  <a class="iconButton" href="boost.html" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-    <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/rocket.png" alt="Boost" />
-    Boost
-  </a>
+    const tapCountEl = document.getElementById('tapCount');
+    const energyEl = document.getElementById('energy');
+    const boostEl = document.getElementById('boostActive');
 
-  <a class="iconButton" href="skins.html" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-    <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/t-shirt.png" alt="Skins" />
-    Skins
-  </a>
-</div>
-
-
-<script>
-  const tapCountElem = document.getElementById('tapCount');
-  const levelInfoElem = document.getElementById('levelInfo');
-  const xpBar = document.getElementById('xpBar');
-  const tapButton = document.getElementById('tapButton');
-  const resetButton = document.getElementById('resetButton');
-  const urlParams = new URLSearchParams(window.location.search);
-  const ref = urlParams.get('ref');
-  const dailyRewardButton = document.getElementById('dailyRewardButton');
-
-function checkDailyReward() {
-  const lastClaimed = localStorage.getItem('dailyRewardClaimedAt');
-  const now = Date.now();
-  const oneDay = 24 * 60 * 60 * 1000;
-
-  if (!lastClaimed || now - parseInt(lastClaimed) >= oneDay) {
-    dailyRewardButton.disabled = false;
-  } else {
-    dailyRewardButton.disabled = true;
-  }
-}
-
-dailyRewardButton.onclick = () => {
-  const rewardAmount = 2000;
-
-  taps += rewardAmount;
-  localStorage.setItem('taps', taps);
-  localStorage.setItem('dailyRewardClaimedAt', Date.now());
-  alert(`🎁 Ти отримав ${rewardAmount} тапів як щоденну нагороду!`);
-  updateDisplay();
-  checkDailyReward();
-};
-
-
-// Перевірка при завантаженні
-checkDailyReward();
-
-
-if (ref && !localStorage.getItem('referredBy')) {
-  localStorage.setItem('referredBy', ref);
-}
-
-
-  let taps = parseInt(localStorage.getItem('taps')) || 0;
-  let boost = parseInt(localStorage.getItem('boost')) || 1;
-  let xp = parseInt(localStorage.getItem('xp')) || 0;
-  let level = parseInt(localStorage.getItem('level')) || 1;
-  let energy = parseInt(localStorage.getItem('energy')) || 1000;
-
-  const maxEnergy = 1000;
-  const energyRestoreRate = 1; // +1 за 1 сек
-
-  function xpForNextLevel(level) {
-    return 100 + (level - 1) * 50;
-  }
-
-  function boostPrice(boostLevel) {
-    return 100 * Math.pow(2, boostLevel - 1); // 100, 200, 400, 800...
-  }
-
-  function updateDisplay() {
-    tapCountElem.textContent = `Тапів: ${taps} | Boost: x${boost} | ⚡️${energy}`;
-    levelInfoElem.textContent = `Рівень: ${level} | XP: ${xp} / ${xpForNextLevel(level)}`;
-    const percent = Math.min((xp / xpForNextLevel(level)) * 100, 100);
-    xpBar.style.width = `${percent}%`;
-  }
-
-function applySkin() {
-  const skin = localStorage.getItem('skin') || 'green';
-  switch (skin) {
-    case 'red':
-      tapButton.style.backgroundColor = '#e74c3c';
-      tapButton.style.color = '#fff';
-      resetButton.style.backgroundColor = '#e74c3c';
-      document.documentElement.style.setProperty('--glow-color', '#e74c3c');
-      break;
-    case 'yellow':
-      tapButton.style.backgroundColor = '#f1c40f';
-      tapButton.style.color = '#fff';
-      resetButton.style.backgroundColor = '#f1c40f';
-      document.documentElement.style.setProperty('--glow-color', '#f1c40f');
-      break;
-    default:
-      tapButton.style.backgroundColor = '#4CAF50';
-      tapButton.style.color = '#fff';
-      resetButton.style.backgroundColor = '#4CAF50';
-      document.documentElement.style.setProperty('--glow-color', '#4CAF50');
-  }
-}
-
-  applySkin();
-  updateDisplay();
-
-  tapButton.onclick = () => {
-  if (energy > 0) {
-    taps += boost;
-    xp += 1;
-    energy -= 1;
-
-    // Анімація клацання
-    tapButton.classList.add('tapFlash');
-    setTimeout(() => tapButton.classList.remove('tapFlash'), 300);
-
-    while (xp >= xpForNextLevel(level)) {
-      xp -= xpForNextLevel(level);
-      level++;
-      alert(`🎉 Новий рівень: ${level}`);
+    function updateDisplay() {
+      tapCountEl.textContent = tapCount;
+      energyEl.textContent = Math.round(energy);
+      boostEl.textContent = boostActive ? 'Так' : 'Ні';
     }
 
-    localStorage.setItem('taps', taps);
-    localStorage.setItem('xp', xp);
-    localStorage.setItem('level', level);
-    localStorage.setItem('energy', energy);
-    updateDisplay();
-  } else {
-    alert('Немає енергії! Зачекай кілька секунд ⏳');
-  }
-};
-
-
-  resetButton.onclick = () => {
-    taps = 0;
-    boost = 1;
-    xp = 0;
-    level = 1;
-    energy = maxEnergy;
-    localStorage.setItem('taps', taps);
-    localStorage.setItem('boost', boost);
-    localStorage.setItem('xp', xp);
-    localStorage.setItem('level', level);
-    localStorage.setItem('energy', energy);
-    updateDisplay();
-  };
-
-  // Автовідновлення енергії
-  setInterval(() => {
-    if (energy < maxEnergy) {
-      energy += energyRestoreRate;
-      if (energy > maxEnergy) energy = maxEnergy;
-      localStorage.setItem('energy', energy);
-      updateDisplay();
-    }
-  }, 1000);
-
-  // Покупка boost за тапи
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'b') { // натисни 'b' для покупки boost
-      const price = boostPrice(boost);
-      if (taps >= price) {
-        taps -= price;
-        boost++;
-        alert(`✅ Куплено Boost! Тепер x${boost}`);
-        localStorage.setItem('boost', boost);
-        localStorage.setItem('taps', taps);
+    document.getElementById('tapButton').addEventListener('click', () => {
+      if (energy >= 1) {
+        const tapValue = boostActive ? 2 : 1;
+        tapCount += tapValue;
+        energy -= 1;
         updateDisplay();
       } else {
-        alert(`❌ Потрібно ${price} тапів для бусту`);
+        alert("Недостатньо енергії!");
+      }
+    });
+
+    document.getElementById('boostButton').addEventListener('click', () => {
+      if (!boostActive) {
+        boostActive = true;
+        updateDisplay();
+        setTimeout(() => {
+          boostActive = false;
+          updateDisplay();
+        }, 15000); // 15 секунд
+      }
+    });
+
+    energyInterval = setInterval(() => {
+      if (energy < 100) {
+        energy += 0.5; // Відновлення енергії
+        updateDisplay();
+      }
+    }, 1000);
+  </script>
+
+  <!-- Firebase імпорт та реферальний запис -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyANFZ2lX67TBw0O5RLlPnsOWadGjJyYQsA",
+      authDomain: "lazytapapp-bc65d.firebaseapp.com",
+      projectId: "lazytapapp-bc65d",
+      storageBucket: "lazytapapp-bc65d.firebasestorage.app",
+      messagingSenderId: "1083312535473",
+      appId: "1:1083312535473:web:6dee62734078694ab76f90"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+
+    if (refCode) {
+      const userId = `user_${Date.now()}`;
+      try {
+        await setDoc(doc(db, "referrals", userId), {
+          referredBy: refCode,
+          timestamp: serverTimestamp()
+        });
+        console.log("Реферал збережено успішно");
+      } catch (e) {
+        console.error("Помилка при збереженні реферала:", e);
       }
     }
-  });
-
-  // Якщо змінюється з іншої вкладки
-  window.addEventListener('storage', (event) => {
-  switch (event.key) {
-    case 'boost':
-      boost = parseInt(event.newValue) || 1;
-      break;
-    case 'taps':
-      taps = parseInt(event.newValue) || 0;
-      break;
-    case 'xp':
-      xp = parseInt(event.newValue) || 0;
-      break;
-    case 'level':
-      level = parseInt(event.newValue) || 1;
-      break;
-    case 'energy':
-      energy = parseInt(event.newValue) || maxEnergy;
-      break;
-    case 'skin':
-      applySkin(); // лише applySkin без reset змін
-      return; // НЕ викликаємо updateDisplay, бо applySkin не чіпає інші змінні
-  }
-  updateDisplay();
-});
-</script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyANFZ2lX67TBw0O5RLlPnsOWadGjJyYQsA",
-    authDomain: "lazytapapp-bc65d.firebaseapp.com",
-    projectId: "lazytapapp-bc65d",
-    storageBucket: "lazytapapp-bc65d.firebasestorage.app",
-    messagingSenderId: "1083312535473",
-    appId: "1:1083312535473:web:6dee62734078694ab76f90"
-  };
-
-  const app = initializeApp(firebaseConfig);
-</script>
-
+  </script>
 
 </body>
 </html>
