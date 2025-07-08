@@ -361,12 +361,10 @@ function applySkin() {
   }
   updateDisplay();
 });
-  type="module">
-  // Імпортуємо необхідні функції з Firebase SDK
+</script>
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getFirestore, collection, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-  // Конфігурація твого Firebase проєкту
   const firebaseConfig = {
     apiKey: "AIzaSyANFZ2lX67TBw0O5RLlPnsOWadGjJyYQsA",
     authDomain: "lazytapapp-bc65d.firebaseapp.com",
@@ -376,31 +374,9 @@ function applySkin() {
     appId: "1:1083312535473:web:6dee62734078694ab76f90"
   };
 
-  // Ініціалізуємо Firebase
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Зчитуємо параметр реферального коду з URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get('ref');
-
-  if (refCode) {
-    // Створюємо унікальний ID користувача (просто приклад)
-    const userId = `user_${Date.now()}`;
-
-    // Записуємо в Firestore, хто реферал цього користувача
-    setDoc(doc(db, "referrals", userId), {
-      referredBy: refCode,
-      timestamp: serverTimestamp()
-    })
-    .then(() => {
-      console.log('Реферал збережено');
-    })
-    .catch((error) => {
-      console.error('Помилка запису рефералу:', error);
-    });
-  }
 </script>
+
 
 </body>
 </html>
