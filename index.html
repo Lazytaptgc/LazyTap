@@ -327,7 +327,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyANFZ2lX67TBw0O5RLlPnsOWadGjJyYQsA",
@@ -341,22 +341,37 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get('ref');
-
-  if (refCode) {
-    const userId = `user_${Date.now()}`;
-
-    setDoc(doc(db, "referrals", userId), {
-      referredBy: refCode,
-      timestamp: serverTimestamp()
-    }).then(() => {
-      console.log('Реферал збережено');
-    }).catch((error) => {
-      console.error('Помилка запису рефералу:', error);
-    });
+  // Створюємо унікальний userId — або зберігаємо в localStorage
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = `user_${Date.now()}`;
+    localStorage.setItem('userId', userId);
   }
+
+  // Функція для збереження даних гравця
+  async function savePlayerData() {
+    try {
+      await setDoc(doc(db, "players", userId), {
+        taps,
+        boost,
+        level,
+        xp,
+        energy,
+        updatedAt: new Date()
+      });
+      console.log("✅ Дані гравця збережено!");
+    } catch (error) {
+      console.error("❌ Помилка збереження:", error);
+    }
+  }
+
+  // Зберігай після кожного тапу
+  tapButton.addEventListener('click', savePlayerData);
+
+  // А також при завантаженні сторінки
+  window.addEventListener('load', savePlayerData);
 </script>
+
 
 </body>
 </html>
