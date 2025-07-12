@@ -144,7 +144,8 @@
   </style>
 </head>
 <body>
-
+<h1>LazyTap 👆</h1>
+  <p>Твій акаунт створюється...</p>
 <div id="levelInfo">Рівень: 1 | XP: 0 / 100</div>
 <div id="xpBarContainer"><div id="xpBar"></div></div>
 <div style="position: relative; width: 100%; max-width: 500px;">
@@ -193,6 +194,34 @@
 
   const maxEnergy = 1000;
   const energyRestoreRate = 1;
+  const firebaseConfig = {
+      apiKey: "AIzaSyDW_MZYWCH8-yy_TUVVGzN-bRzMpHcCR6I",
+      authDomain: "lazytapapp-bc65d.firebaseapp.com",
+      databaseURL: "https://lazytapapp-bc65d-default-rtdb.firebaseio.com",
+      projectId: "lazytapapp-bc65d",
+      storageBucket: "lazytapapp-bc65d.appspot.com",
+      messagingSenderId: "898618845418",
+      appId: "1:898618845418:web:YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // 2. Генеруємо ID для користувача
+    const userId = 'user-' + Date.now();
+
+    // 3. Записуємо в базу
+    db.ref('players/' + userId).set({
+      taps: 0,
+      level: 1,
+      joinedAt: new Date().toISOString()
+    }).then(() => {
+      console.log("✅ Користувач записаний:", userId);
+      document.body.innerHTML += `<p>Привіт, ${userId}! Ти в базі 🔥</p>`;
+    }).catch((error) => {
+      console.error("❌ Помилка запису:", error);
+      document.body.innerHTML += `<p>Помилка 😢</p>`;
+    });
 
   function xpForNextLevel(level) {
     return 100 + (level - 1) * 50;
