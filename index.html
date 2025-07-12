@@ -327,7 +327,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyANFZ2lX67TBw0O5RLlPnsOWadGjJyYQsA",
@@ -341,36 +341,39 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Створюємо унікальний userId — або зберігаємо в localStorage
-  let userId = localStorage.getItem('userId');
-  if (!userId) {
-    userId = `user_${Date.now()}`;
-    localStorage.setItem('userId', userId);
-  }
+  // Перевіряємо, чи користувач вже записаний
+  let savedUserId = localStorage.getItem("playerId");
 
-  // Функція для збереження даних гравця
-  async function savePlayerData() {
-    try {
-      await setDoc(doc(db, "players", userId), {
-        taps,
-        boost,
-        level,
-        xp,
-        energy,
-        updatedAt: new Date()
+  if (!savedUserId) {
+    // Генеруємо унікальний ID для користувача
+    const newUserId = `player_${Date.now()}`;
+    localStorage.setItem("playerId", newUserId);
+
+    // Отримуємо реферальний код з URL (якщо є)
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+
+    // Дані нового гравця
+    const newPlayer = {
+      createdAt: serverTimestamp(),
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      referredBy: refCode || null,
+    };
+
+    // Додаємо у Firestore
+    setDoc(doc(db, "players", newUserId), newPlayer)
+      .then(() => {
+        console.log("✅ Новий гравець доданий до бази");
+      })
+      .catch((error) => {
+        console.error("❌ Помилка при додаванні гравця:", error);
       });
-      console.log("✅ Дані гравця збережено!");
-    } catch (error) {
-      console.error("❌ Помилка збереження:", error);
-    }
+  } else {
+    console.log("🟡 Користувач вже записаний як:", savedUserId);
   }
-
-  // Зберігай після кожного тапу
-  tapButton.addEventListener('click', savePlayerData);
-
-  // А також при завантаженні сторінки
-  window.addEventListener('load', savePlayerData);
 </script>
+
 
 
 </body>
