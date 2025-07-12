@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>LazyTap</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      height: 100vh; text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
       background: linear-gradient(135deg, #f5e9d3, #d9ccc4, #c4b7a6);
       background-size: 400% 400%;
       animation: gradientBG 20s ease infinite;
@@ -19,9 +23,15 @@
     }
 
     @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
     }
 
     #tapCount {
@@ -48,7 +58,7 @@
 
     #xpBar {
       height: 100%;
-      background: #4CAF50;
+      background: #4caf50;
       width: 0%;
       transition: width 0.3s;
     }
@@ -58,16 +68,18 @@
       height: 140px;
       border-radius: 70px;
       border: none;
-      background-color: #4CAF50;
+      background-color: #4caf50;
       color: white;
       font-size: 2em;
       cursor: pointer;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
       transition: background-color 0.3s ease;
       margin-bottom: 20px;
     }
 
-    #tapButton:hover { background-color: #45a049; }
+    #tapButton:hover {
+      background-color: #45a049;
+    }
 
     #tapButton:active {
       transform: scale(0.9);
@@ -87,7 +99,7 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       z-index: 1000;
-      background-color: #4CAF50;
+      background-color: #4caf50;
     }
 
     #resetButton:hover {
@@ -113,7 +125,9 @@
       text-decoration: none;
     }
 
-    .iconButton:hover { color: #4CAF50; }
+    .iconButton:hover {
+      color: #4caf50;
+    }
 
     .iconImg {
       width: 40px;
@@ -144,62 +158,64 @@
   </style>
 </head>
 <body>
-<h1>LazyTap 👆</h1>
+  <h1>LazyTap 👆</h1>
   <p>Твій акаунт створюється...</p>
-<div id="levelInfo">Рівень: 1 | XP: 0 / 100</div>
-<div id="xpBarContainer"><div id="xpBar"></div></div>
-<div style="position: relative; width: 100%; max-width: 500px;">
-  <div id="tapCount">Тапів: 0</div>
-  <button id="resetButton">Reset</button>
-</div>
+  <div id="levelInfo">Рівень: 1 | XP: 0 / 100</div>
+  <div id="xpBarContainer"><div id="xpBar"></div></div>
+  <div style="position: relative; width: 100%; max-width: 500px;">
+    <div id="tapCount">Тапів: 0</div>
+    <button id="resetButton">Reset</button>
+  </div>
 
-<button id="tapButton" aria-label="Тап кнопка">🔘</button>
-<button id="dailyRewardButton">Щоденна винагорода 🎁</button>
+  <button id="tapButton" aria-label="Тап кнопка">🔘</button>
+  <button id="dailyRewardButton">Щоденна винагорода 🎁</button>
 
-<div id="iconsRow">
-  <a class="iconButton" href="referral.html">
-    <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/share.png" alt="Реферал" />
-    Реферал
-  </a>
+  <div id="iconsRow">
+    <a class="iconButton" href="referral.html">
+      <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/share.png" alt="Реферал" />
+      Реферал
+    </a>
 
-  <a class="iconButton" href="earn.html">
-    <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/money-bag.png" alt="Earn" />
-    Earn
-  </a>
+    <a class="iconButton" href="earn.html">
+      <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/money-bag.png" alt="Earn" />
+      Earn
+    </a>
 
-  <a class="iconButton" href="boost.html">
-    <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/rocket.png" alt="Boost" />
-    Boost
-  </a>
+    <a class="iconButton" href="boost.html">
+      <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/rocket.png" alt="Boost" />
+      Boost
+    </a>
 
-  <a class="iconButton" href="skins.html">
-    <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/t-shirt.png" alt="Skins" />
-    Skins
-  </a>
-</div>
+    <a class="iconButton" href="skins.html">
+      <img class="iconImg" src="https://img.icons8.com/ios-filled/50/000000/t-shirt.png" alt="Skins" />
+      Skins
+    </a>
+  </div>
 
-<script>
-  const tapCountElem = document.getElementById('tapCount');
-  const levelInfoElem = document.getElementById('levelInfo');
-  const xpBar = document.getElementById('xpBar');
-  const tapButton = document.getElementById('tapButton');
-  const resetButton = document.getElementById('resetButton');
-  const dailyRewardButton = document.getElementById('dailyRewardButton');
+  <script>
+    const tapCountElem = document.getElementById('tapCount');
+    const levelInfoElem = document.getElementById('levelInfo');
+    const xpBar = document.getElementById('xpBar');
+    const tapButton = document.getElementById('tapButton');
+    const resetButton = document.getElementById('resetButton');
+    const dailyRewardButton = document.getElementById('dailyRewardButton');
 
-  let taps = parseInt(localStorage.getItem('taps')) || 0;
-  let boost = parseInt(localStorage.getItem('boost')) || 1;
-  let xp = parseInt(localStorage.getItem('xp')) || 0;
-  let level = parseInt(localStorage.getItem('level')) || 1;
-  let energy = parseInt(localStorage.getItem('energy')) || 1000;
-  let userId = localStorage.getItem('userId');
-if (!userId) {
-  userId = 'user-' + Date.now();
-  localStorage.setItem('userId', userId);
-}
+    let taps = parseInt(localStorage.getItem('taps')) || 0;
+    let boost = parseInt(localStorage.getItem('boost')) || 1;
+    let xp = parseInt(localStorage.getItem('xp')) || 0;
+    let level = parseInt(localStorage.getItem('level')) || 1;
+    let energy = parseInt(localStorage.getItem('energy')) || 1000;
 
-  const maxEnergy = 1000;
-  const energyRestoreRate = 1;
-  const firebaseConfig = {
+    // Виправлено: оголосити userId один раз і взяти з localStorage, або створити
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+      userId = 'user-' + Date.now();
+      localStorage.setItem('userId', userId);
+    }
+
+    const maxEnergy = 1000;
+    const energyRestoreRate = 1;
+    const firebaseConfig = {
       apiKey: "AIzaSyDW_MZYWCH8-yy_TUVVGzN-bRzMpHcCR6I",
       authDomain: "lazytapapp-bc65d.firebaseapp.com",
       databaseURL: "https://lazytapapp-bc65d-default-rtdb.firebaseio.com",
@@ -212,239 +228,149 @@ if (!userId) {
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 2. Генеруємо ID для користувача
-    const userId = 'user-' + Date.now();
-
-    // 3. Записуємо в базу
-    db.ref('players/' + userId).set({
-      taps: 0,
-      level: 1,
-      joinedAt: new Date().toISOString()
-    }).then(() => {
-      console.log("✅ Користувач записаний:", userId);
-      document.body.innerHTML += `<p>Привіт, ${userId}! Ти в базі 🔥</p>`;
-    }).catch((error) => {
-      console.error("❌ Помилка запису:", error);
-      document.body.innerHTML += `<p>Помилка 😢</p>`;
-    });
-    const userRef = ref(db, 'players/' + userId);
-
-get(userRef).then((snapshot) => {
-  if (!snapshot.exists()) {
-    // якщо новий користувач — створюємо збереження в базі
-    set(userRef, {
-      taps: taps,
-      xp: xp,
-      level: level,
-      boost: boost,
-      energy: energy
-    });
-  } else {
-    // якщо вже є — оновлюємо локальні змінні з бази
-    const data = snapshot.val();
-    taps = data.taps || 0;
-    xp = data.xp || 0;
-    level = data.level || 1;
-    boost = data.boost || 1;
-    energy = data.energy || 1000;
-    updateDisplay();
-  }
-});
-
-  function xpForNextLevel(level) {
-    return 100 + (level - 1) * 50;
-  }
-
-  function boostPrice(boostLevel) {
-    return 100 * Math.pow(2, boostLevel - 1);
-  }
-
-  function updateDisplay() {
-    tapCountElem.textContent = `Тапів: ${taps} | Boost: x${boost} | ⚡️${energy}`;
-    levelInfoElem.textContent = `Рівень: ${level} | XP: ${xp} / ${xpForNextLevel(level)}`;
-    const percent = Math.min((xp / xpForNextLevel(level)) * 100, 100);
-    xpBar.style.width = `${percent}%`;
-  }
-
-  function applySkin() {
-    const skin = localStorage.getItem('skin') || 'green';
-    switch (skin) {
-      case 'red':
-        tapButton.style.backgroundColor = '#e74c3c';
-        resetButton.style.backgroundColor = '#e74c3c';
-        break;
-      case 'yellow':
-        tapButton.style.backgroundColor = '#f1c40f';
-        resetButton.style.backgroundColor = '#f1c40f';
-        break;
-      default:
-        tapButton.style.backgroundColor = '#4CAF50';
-        resetButton.style.backgroundColor = '#4CAF50';
-    }
-  }
-
-  function checkDailyReward() {
-    const lastClaimed = localStorage.getItem('dailyRewardClaimedAt');
-    const now = Date.now();
-    const oneDay = 24 * 60 * 60 * 1000;
-
-    if (!lastClaimed || now - parseInt(lastClaimed) >= oneDay) {
-      dailyRewardButton.disabled = false;
-    } else {
-      dailyRewardButton.disabled = true;
-    }
-  }
-
-  dailyRewardButton.onclick = () => {
-    const rewardAmount = 2000;
-    taps += rewardAmount;
-    localStorage.setItem('taps', taps);
-    localStorage.setItem('dailyRewardClaimedAt', Date.now());
-    alert(`🎁 Ти отримав ${rewardAmount} тапів як щоденну нагороду!`);
-    updateDisplay();
-    checkDailyReward();
-  };
-
- tapButton.onclick = () => {
-  if (energy > 0) {
-    taps += boost;
-    xp += 1;
-    energy -= 1;
-
-    // логіка рівня
-    while (xp >= xpForNextLevel(level)) {
-      xp -= xpForNextLevel(level);
-      level++;
-      alert(`🎉 Новий рівень: ${level}`);
-    }
-
-    localStorage.setItem('taps', taps);
-    localStorage.setItem('xp', xp);
-    localStorage.setItem('level', level);
-    localStorage.setItem('energy', energy);
-
-    // ⬇️ Додай Firebase update
-    update(ref(db, 'players/' + userId), {
-      taps: taps,
-      xp: xp,
-      level: level,
-      energy: energy
-    });
-
-    updateDisplay();
-  }
-};
-
-
- resetButton.onclick = () => {
-  taps = 0;
-  boost = 1;
-  xp = 0;
-  level = 1;
-  energy = maxEnergy;
-
-  // Зберігаємо в localStorage
-  localStorage.setItem('taps', taps);
-  localStorage.setItem('boost', boost);
-  localStorage.setItem('xp', xp);
-  localStorage.setItem('level', level);
-  localStorage.setItem('energy', energy);
-
-  // Оновлюємо інтерфейс
-  updateDisplay();
-
-  // 🔥 Оновлюємо в Firebase
-  update(ref(db, 'players/' + userId), {
-    taps,
-    boost,
-    xp,
-    level,
-    energy
-  });
-};
-
-
-  setInterval(() => {
-    if (energy < maxEnergy) {
-      energy += energyRestoreRate;
-      if (energy > maxEnergy) energy = maxEnergy;
-      localStorage.setItem('energy', energy);
-      updateDisplay();
-    }
-  }, 1000);
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'b') {
-      const price = boostPrice(boost);
-      if (taps >= price) {
-        taps -= price;
-        boost++;
-        alert(`✅ Куплено Boost! Тепер x${boost}`);
-        localStorage.setItem('boost', boost);
-        localStorage.setItem('taps', taps);
-        updateDisplay();
+    // Записати користувача в базу при першому запуску
+    firebase.database().ref('players/' + userId).once('value').then((snapshot) => {
+      if (!snapshot.exists()) {
+        firebase.database().ref('players/' + userId).set({
+          taps: taps,
+          xp: xp,
+          level: level,
+          boost: boost,
+          energy: energy,
+          joinedAt: new Date().toISOString()
+        });
       } else {
-        alert(`❌ Потрібно ${price} тапів для бусту`);
+        const data = snapshot.val();
+        taps = data.taps || taps;
+        xp = data.xp || xp;
+        level = data.level || level;
+        boost = data.boost || boost;
+        energy = data.energy || energy;
+        updateDisplay();
+      }
+    });
+
+    function xpForNextLevel(level) {
+      return 100 + (level - 1) * 50;
+    }
+
+    function boostPrice(boostLevel) {
+      return 100 * Math.pow(2, boostLevel - 1);
+    }
+
+    function updateDisplay() {
+      tapCountElem.textContent = `Тапів: ${taps} | Boost: x${boost} | ⚡️${energy}`;
+      levelInfoElem.textContent = `Рівень: ${level} | XP: ${xp} / ${xpForNextLevel(level)}`;
+      const percent = Math.min((xp / xpForNextLevel(level)) * 100, 100);
+      xpBar.style.width = `${percent}%`;
+    }
+
+    function applySkin() {
+      const skin = localStorage.getItem('skin') || 'green';
+      switch (skin) {
+        case 'red':
+          tapButton.style.backgroundColor = '#e74c3c';
+          resetButton.style.backgroundColor = '#e74c3c';
+          break;
+        case 'yellow':
+          tapButton.style.backgroundColor = '#f1c40f';
+          resetButton.style.backgroundColor = '#f1c40f';
+          break;
+        default:
+          tapButton.style.backgroundColor = '#4caf50';
+          resetButton.style.backgroundColor = '#4caf50';
       }
     }
-  });
 
-  window.addEventListener('storage', (event) => {
-    switch (event.key) {
-      case 'boost': boost = parseInt(event.newValue) || 1; break;
-      case 'taps': taps = parseInt(event.newValue) || 0; break;
-      case 'xp': xp = parseInt(event.newValue) || 0; break;
-      case 'level': level = parseInt(event.newValue) || 1; break;
-      case 'energy': energy = parseInt(event.newValue) || maxEnergy; break;
-      case 'skin': applySkin(); return;
+    function checkDailyReward() {
+      const lastClaimed = localStorage.getItem('dailyRewardClaimedAt');
+      const now = Date.now();
+      const oneDay = 24 * 60 * 60 * 1000;
+
+      if (!lastClaimed || now - parseInt(lastClaimed) >= oneDay) {
+        dailyRewardButton.disabled = false;
+      } else {
+        dailyRewardButton.disabled = true;
+      }
     }
+
+    dailyRewardButton.onclick = () => {
+      const rewardAmount = 2000;
+      taps += rewardAmount;
+      localStorage.setItem('taps', taps);
+      localStorage.setItem('dailyRewardClaimedAt', Date.now());
+      alert(`🎁 Ти отримав ${rewardAmount} тапів як щоденну нагороду!`);
+      updateDisplay();
+      checkDailyReward();
+    };
+
+    tapButton.onclick = () => {
+      if (energy <= 0) {
+        alert("⚡️ Не вистачає енергії! Зачекай на відновлення.");
+        return;
+      }
+      taps += boost;
+      xp += 1;
+      energy--;
+      if (xp >= xpForNextLevel(level)) {
+        level++;
+        xp = 0;
+        alert(`🎉 Вітаю! Ти досяг рівня ${level}!`);
+      }
+      updateDisplay();
+      localStorage.setItem('taps', taps);
+      localStorage.setItem('xp', xp);
+      localStorage.setItem('level', level);
+      localStorage.setItem('energy', energy);
+
+      // Виправлено оновлення Firebase у compat стилі
+      firebase.database().ref('players/' + userId).update({
+        taps: taps,
+        xp: xp,
+        level: level,
+        energy: energy,
+        boost: boost
+      });
+    };
+
+    resetButton.onclick = () => {
+      if (confirm("Ви впевнені, що хочете скинути всі дані?")) {
+        taps = 0;
+        xp = 0;
+        level = 1;
+        energy = maxEnergy;
+        boost = 1;
+        localStorage.clear();
+        localStorage.setItem('userId', userId); // зберігаємо userId, щоб не створювати нового
+        updateDisplay();
+
+        firebase.database().ref('players/' + userId).set({
+          taps: taps,
+          xp: xp,
+          level: level,
+          boost: boost,
+          energy: energy,
+          joinedAt: new Date().toISOString()
+        });
+      }
+    };
+
+    // Відновлення енергії кожні 5 секунд
+    setInterval(() => {
+      if (energy < maxEnergy) {
+        energy = Math.min(energy + energyRestoreRate, maxEnergy);
+        localStorage.setItem('energy', energy);
+        updateDisplay();
+
+        firebase.database().ref('players/' + userId).update({
+          energy: energy
+        });
+      }
+    }, 5000);
+
+    applySkin();
     updateDisplay();
-  });
-
-  applySkin();
-  updateDisplay();
-  checkDailyReward();
-</script>
-
-<script type="module">
-  // Імпорт Firebase SDK
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
-
-  // 🔐 Firebase конфіг
-  const firebaseConfig = {
-    apiKey: "AIzaSyANFZ2lX67TBw0O5RLlPnsOWadGjJyYQsA",
-    authDomain: "lazytapapp-bc65d.firebaseapp.com",
-    databaseURL: "https://lazytapapp-bc65d-default-rtdb.firebaseio.com",
-    projectId: "lazytapapp-bc65d",
-    storageBucket: "lazytapapp-bc65d.appspot.com",
-    messagingSenderId: "1083312535473",
-    appId: "1:1083312535473:web:6dee62734078694ab76f90"
-  };
-
-  // Ініціалізація
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  // ✅ Перевірка: чи вже є userId в localStorage
-  const userId = localStorage.getItem("userId") || `user-${Date.now()}`;
-  localStorage.setItem("userId", userId);
-
-  // ✅ Додаємо нового користувача в базу (одноразово)
-  set(ref(db, 'players/' + userId), {
-    taps: 0,
-    level: 1,
-    joinedAt: new Date().toISOString()
-  })
-  .then(() => {
-    console.log("🟢 Користувач доданий до бази:", userId);
-  })
-  .catch((error) => {
-    console.error("❌ Помилка запису:", error);
-  });
-</script>
-
-
-
+    checkDailyReward();
+  </script>
 </body>
 </html>
