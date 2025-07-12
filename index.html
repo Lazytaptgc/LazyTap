@@ -326,52 +326,41 @@
 </script>
 
 <script type="module">
+  // Імпорт Firebase SDK
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
+  // 🔐 Firebase конфіг
   const firebaseConfig = {
     apiKey: "AIzaSyANFZ2lX67TBw0O5RLlPnsOWadGjJyYQsA",
     authDomain: "lazytapapp-bc65d.firebaseapp.com",
+    databaseURL: "https://lazytapapp-bc65d-default-rtdb.firebaseio.com",
     projectId: "lazytapapp-bc65d",
     storageBucket: "lazytapapp-bc65d.appspot.com",
     messagingSenderId: "1083312535473",
     appId: "1:1083312535473:web:6dee62734078694ab76f90"
   };
 
+  // Ініціалізація
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const db = getDatabase(app);
 
-  // Перевіряємо, чи користувач вже записаний
-  let savedUserId = localStorage.getItem("playerId");
+  // ✅ Перевірка: чи вже є userId в localStorage
+  const userId = localStorage.getItem("userId") || `user-${Date.now()}`;
+  localStorage.setItem("userId", userId);
 
-  if (!savedUserId) {
-    // Генеруємо унікальний ID для користувача
-    const newUserId = `player_${Date.now()}`;
-    localStorage.setItem("playerId", newUserId);
-
-    // Отримуємо реферальний код з URL (якщо є)
-    const urlParams = new URLSearchParams(window.location.search);
-    const refCode = urlParams.get('ref');
-
-    // Дані нового гравця
-    const newPlayer = {
-      createdAt: serverTimestamp(),
-      userAgent: navigator.userAgent,
-      platform: navigator.platform,
-      referredBy: refCode || null,
-    };
-
-    // Додаємо у Firestore
-    setDoc(doc(db, "players", newUserId), newPlayer)
-      .then(() => {
-        console.log("✅ Новий гравець доданий до бази");
-      })
-      .catch((error) => {
-        console.error("❌ Помилка при додаванні гравця:", error);
-      });
-  } else {
-    console.log("🟡 Користувач вже записаний як:", savedUserId);
-  }
+  // ✅ Додаємо нового користувача в базу (одноразово)
+  set(ref(db, 'players/' + userId), {
+    taps: 0,
+    level: 1,
+    joinedAt: new Date().toISOString()
+  })
+  .then(() => {
+    console.log("🟢 Користувач доданий до бази:", userId);
+  })
+  .catch((error) => {
+    console.error("❌ Помилка запису:", error);
+  });
 </script>
 
 
