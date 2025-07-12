@@ -191,6 +191,11 @@
   let xp = parseInt(localStorage.getItem('xp')) || 0;
   let level = parseInt(localStorage.getItem('level')) || 1;
   let energy = parseInt(localStorage.getItem('energy')) || 1000;
+  let userId = localStorage.getItem('userId');
+if (!userId) {
+  userId = 'user-' + Date.now();
+  localStorage.setItem('userId', userId);
+}
 
   const maxEnergy = 1000;
   const energyRestoreRate = 1;
@@ -222,6 +227,29 @@
       console.error("❌ Помилка запису:", error);
       document.body.innerHTML += `<p>Помилка 😢</p>`;
     });
+    const userRef = ref(db, 'players/' + userId);
+
+get(userRef).then((snapshot) => {
+  if (!snapshot.exists()) {
+    // якщо новий користувач — створюємо збереження в базі
+    set(userRef, {
+      taps: taps,
+      xp: xp,
+      level: level,
+      boost: boost,
+      energy: energy
+    });
+  } else {
+    // якщо вже є — оновлюємо локальні змінні з бази
+    const data = snapshot.val();
+    taps = data.taps || 0;
+    xp = data.xp || 0;
+    level = data.level || 1;
+    boost = data.boost || 1;
+    energy = data.energy || 1000;
+    updateDisplay();
+  }
+});
 
   function xpForNextLevel(level) {
     return 100 + (level - 1) * 50;
@@ -277,41 +305,64 @@
     checkDailyReward();
   };
 
-  tapButton.onclick = () => {
-    if (energy > 0) {
-      taps += boost;
-      xp += 1;
-      energy -= 1;
+ tapButton.onclick = () => {
+  if (energy > 0) {
+    taps += boost;
+    xp += 1;
+    energy -= 1;
 
-      while (xp >= xpForNextLevel(level)) {
-        xp -= xpForNextLevel(level);
-        level++;
-        alert(`🎉 Новий рівень: ${level}`);
-      }
-
-      localStorage.setItem('taps', taps);
-      localStorage.setItem('xp', xp);
-      localStorage.setItem('level', level);
-      localStorage.setItem('energy', energy);
-      updateDisplay();
-    } else {
-      alert('Немає енергії! Зачекай кілька секунд ⏳');
+    // логіка рівня
+    while (xp >= xpForNextLevel(level)) {
+      xp -= xpForNextLevel(level);
+      level++;
+      alert(`🎉 Новий рівень: ${level}`);
     }
-  };
 
-  resetButton.onclick = () => {
-    taps = 0;
-    boost = 1;
-    xp = 0;
-    level = 1;
-    energy = maxEnergy;
     localStorage.setItem('taps', taps);
-    localStorage.setItem('boost', boost);
     localStorage.setItem('xp', xp);
     localStorage.setItem('level', level);
     localStorage.setItem('energy', energy);
+
+    // ⬇️ Додай Firebase update
+    update(ref(db, 'players/' + userId), {
+      taps: taps,
+      xp: xp,
+      level: level,
+      energy: energy
+    });
+
     updateDisplay();
-  };
+  }
+};
+
+
+ resetButton.onclick = () => {
+  taps = 0;
+  boost = 1;
+  xp = 0;
+  level = 1;
+  energy = maxEnergy;
+
+  // Зберігаємо в localStorage
+  localStorage.setItem('taps', taps);
+  localStorage.setItem('boost', boost);
+  localStorage.setItem('xp', xp);
+  localStorage.setItem('level', level);
+  localStorage.setItem('energy', energy);
+
+  // Оновлюємо інтерфейс
+  updateDisplay();
+
+  // 🔥 Оновлюємо в Firebase
+  update(ref(db, 'players/' + userId), {
+    taps,
+    boost,
+    xp,
+    level,
+    energy
+  });
+};
+
 
   setInterval(() => {
     if (energy < maxEnergy) {
