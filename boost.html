@@ -4,6 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Boost</title>
+
+<!-- 🔥 Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -15,8 +20,6 @@
     justify-content: center;
     height: 100vh;
     text-align: center;
-
-    /* Пастельний градієнт з анімацією */
     background: linear-gradient(135deg, #f5e9d3, #d9ccc4, #c4b7a6);
     background-size: 400% 400%;
     animation: gradientBG 20s ease infinite;
@@ -27,7 +30,6 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
-
   button {
     font-size: 1.5em;
     padding: 20px 40px;
@@ -66,21 +68,39 @@
 <body>
 
 <button id="backButton">Назад</button>
-
 <button id="boostPlusOne">Boost +1</button>
 <div id="boostValue">Поточний Boost: 1</div>
 
 <script>
+  // ✅ Firebase config (заміни на свій!)
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    databaseURL: "YOUR_DB_URL",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_BUCKET",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+  // 🎯 Ідентифікатор гравця
+  let userId = localStorage.getItem('userId');
+  if (!userId) {
+    userId = 'user-' + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('userId', userId);
+  }
+
   const backButton = document.getElementById('backButton');
   const boostButton = document.getElementById('boostPlusOne');
   const boostValue = document.getElementById('boostValue');
 
   backButton.onclick = () => {
-    window.location.href = 'index.html'; // повернення на головну
+    window.location.href = 'index.html';
   };
 
   let boost = parseInt(localStorage.getItem('boost')) || 1;
-  let taps = parseInt(localStorage.getItem('taps')) || 1000; // початкове значення, якщо не було
+  let taps = parseInt(localStorage.getItem('taps')) || 1000;
 
   function boostPrice(level) {
     return 100 * Math.pow(2, level - 1);
@@ -103,7 +123,7 @@
         backButton.style.backgroundColor = '#f1c40f';
         backButton.style.color = 'black';
         break;
-      default: // green
+      default:
         boostButton.style.backgroundColor = '#4CAF50';
         backButton.style.backgroundColor = '#4CAF50';
         backButton.style.color = 'white';
@@ -116,8 +136,16 @@
     if (taps >= price) {
       taps -= price;
       boost++;
+
       localStorage.setItem('boost', boost);
       localStorage.setItem('taps', taps);
+
+      // 🔥 Зберігаємо в Firebase
+      firebase.database().ref('players/' + userId).update({
+        boost: boost,
+        taps: taps
+      });
+
       updateBoostDisplay();
       alert(`Куплено Boost x${boost - 1} → x${boost}!`);
     } else {
@@ -134,7 +162,6 @@
   applySkin();
   updateBoostDisplay();
 </script>
-
 
 </body>
 </html>
