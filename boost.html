@@ -141,10 +141,12 @@
       localStorage.setItem('taps', taps);
 
       // 🔥 Зберігаємо в Firebase
-      firebase.database().ref('players/' + userId).update({
-        boost: boost,
-        taps: taps
-      });
+      // Після оновлення локально:
+firebase.database().ref('players/' + userId).update({
+  boost: boost,
+  taps: taps
+});
+
 
       updateBoostDisplay();
       alert(`Куплено Boost x${boost - 1} → x${boost}!`);
