@@ -201,10 +201,11 @@
     const dailyRewardButton = document.getElementById('dailyRewardButton');
 
     let taps = parseInt(localStorage.getItem('taps')) || 0;
-    let boost = parseInt(localStorage.getItem('boost')) || 1;
-    let xp = parseInt(localStorage.getItem('xp')) || 0;
-    let level = parseInt(localStorage.getItem('level')) || 1;
-    let energy = parseInt(localStorage.getItem('energy')) || 1000;
+let boost = parseInt(localStorage.getItem('boost')) || 1;
+let xp = parseInt(localStorage.getItem('xp')) || 0;
+let level = parseInt(localStorage.getItem('level')) || 1;
+let energy = parseInt(localStorage.getItem('energy')) || 1000;
+
 
     // Виправлено: оголосити userId один раз і взяти з localStorage, або створити
     let userId = localStorage.getItem('userId');
@@ -229,37 +230,46 @@
     const db = firebase.database();
 
     // Записати користувача в базу при першому запуску
-    firebase.database().ref('players/' + userId).once('value').then((snapshot) => {
-  if (!snapshot.exists()) {
-    firebase.database().ref('players/' + userId).set({
-      taps: taps,
-      xp: xp,
-      level: level,
-      boost: boost,
-      energy: energy,
-      joinedAt: new Date().toISOString()
-    });
-  } else {
+    firebase.database().ref('players/' + userId).once('value').then(snapshot => {
+  if (snapshot.exists()) {
     const data = snapshot.val();
 
-    // ✅ Дані з Firebase перезаписують локальні
-    taps = data.taps ?? taps;
-    xp = data.xp ?? xp;
-    level = data.level ?? level;
-    boost = data.boost ?? boost;
-    energy = data.energy ?? energy;
+    // Перевіряємо, чи відрізняються дані Firebase від localStorage
+    if (
+      data.taps !== taps ||
+      data.boost !== boost ||
+      data.xp !== xp ||
+      data.level !== level ||
+      data.energy !== energy
+    ) {
+      taps = data.taps || taps;
+      boost = data.boost || boost;
+      xp = data.xp || xp;
+      level = data.level || level;
+      energy = data.energy || energy;
 
-    // ✅ ОНОВЛЮЄМО localStorage після отримання з Firebase
-    localStorage.setItem('taps', taps);
-    localStorage.setItem('xp', xp);
-    localStorage.setItem('level', level);
-    localStorage.setItem('boost', boost);
-    localStorage.setItem('energy', energy);
+      // Оновлюємо localStorage
+      localStorage.setItem('taps', taps);
+      localStorage.setItem('boost', boost);
+      localStorage.setItem('xp', xp);
+      localStorage.setItem('level', level);
+      localStorage.setItem('energy', energy);
 
-    updateDisplay(); // оновлення інтерфейсу
+      // Оновлюємо UI
+      updateDisplay();
+    }
+  } else {
+    // Якщо користувача нема в Firebase — ініціалізуємо
+    firebase.database().ref('players/' + userId).set({
+      taps,
+      boost,
+      xp,
+      level,
+      energy,
+      joinedAt: new Date().toISOString()
+    });
   }
 });
-
     function xpForNextLevel(level) {
       return 100 + (level - 1) * 50;
     }
@@ -269,10 +279,12 @@
     }
 
     function updateDisplay() {
+      document.getElementById('boostValue').textContent = `Поточний Boost: ${boost}`;
       tapCountElem.textContent = `Тапів: ${taps} | Boost: x${boost} | ⚡️${energy}`;
       levelInfoElem.textContent = `Рівень: ${level} | XP: ${xp} / ${xpForNextLevel(level)}`;
       const percent = Math.min((xp / xpForNextLevel(level)) * 100, 100);
       xpBar.style.width = `${percent}%`;
+      updateDisplay();
     }
 
     function applySkin() {
